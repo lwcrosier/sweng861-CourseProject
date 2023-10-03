@@ -1,0 +1,193 @@
+<PageTitle>Check Flight Prices</PageTitle>
+
+<head>
+    <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.js"></script>
+</head>
+
+<div class="mb-3" style="width: 20%">
+    <label class="form-label" for="departure">Departure Airport Code</label>
+    <input class="form-control" id="departure">
+</div>
+
+<div class="mb-3" style="width: 20%">
+    <label class="form-label" for="departure">Departure Airport Code</label>
+    <input class="form-control" id="arrival">
+</div>
+
+<div class="mb-3">
+    <label class="form-label" for="dateInput">Date</label>
+    <input type="date" id="dateInput">
+</div>
+
+<button class="mb-3 btn btn-primary" onclick="startSearch(this)">Get Prices!</button>
+
+<form id="tableForm" asp-action="SaveSearchResultAsTrip" method="post">
+    <div id="tableDiv" hidden>
+        <table id="flightPriceData" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Departure</th>
+                    <th>Destination</th>
+                    <th>Layovers</th>
+                    <th>Price</th>
+                    <th>Primary Carrier</th>
+                    <th>jsonData</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <br />
+    </div>
+</form>
+
+<button class="mb-3 btn btn-danger" id="formButton" onclick="submitForm(this)" hidden>Submit</button>
+
+
+<script>
+    document.getElementById("dateInput").addEventListener("change", function () {
+        var dateInputValue = this.value;
+    });
+
+    let myquerydata;
+    //object.addEventListener("click", myScript);
+    
+    function startSearch() {
+    
+        var uri = "/api/tripadvisorsearch";
+        var Source = document.getElementById("departure").value;
+        var Destination = document.getElementById("arrival").value;
+        var theDate = dateInput.value;
+
+        var queryParams = "?src=" + Source + "&dst=" + Destination + "&date=" + theDate
+        
+        var UriWithParams = uri + queryParams
+
+        
+        fetch(UriWithParams, {
+            method: 'get'
+            
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+                console.log('fetch returned not ok' + response.status);
+                console.log(response.json());
+                
+            }
+
+            response.json().then(function (data) {
+                console.log('fetch returned ok');
+                updateFlightTable(data);
+                console.log(data);
+                myquerydata = data;
+            });
+        })
+        .catch(function (err) {
+            console.log('error:');
+            console.log(err);
+        });
+    }
+
+    function updateFlightTable(responseData) {
+        //let counter = 0;
+        let availableFlights = responseData.data.flights;
+        table.clear().draw();
+        availableFlights.forEach(function (flightData) {
+            let departure = document.getElementById("departure").value;
+            let destination = document.getElementById("arrival").value;
+            let layovers = flightData.segments[0].layovers.length; 
+            
+            let carrier = flightData.segments[0].legs.pop()
+            let carrierName = carrier.operatingCarrier.displayName;
+            let carrierCode = carrier.operatingCarrier.code;
+            
+            let price = flightData.purchaseLinks[0].totalPrice;
+            let departureDate = flightData.segments[0].legs[0].departureDateTime;
+
+            /*
+            let jsonData = '{ ' +
+                '"departure":"' + departure + '",' +
+                '"destination":"' + destination + '",' +
+                '"layovers":"' + layovers + '",' +
+                '"carrierName":"' + carrierName + '",' +
+                '"carrierCode":"' + carrierCode + '",' +
+                '"price":"' + price + '",' +
+                '"departureDate":"' + departureDate + '"' +
+            '}'
+            */
+
+            var objMap = {
+                "departure": departure,
+                "destination": destination,
+                "layovers": layovers,
+                "carrierName": carrierName,
+                "carrierCode": carrierCode,
+                "price": price,
+                "departureDate": departureDate
+            };
+
+            var jsonData = JSON.stringify(objMap);
+
+            //myquerydata.data.flights[0].segments[0].legs[0].departureDateTime
+
+            //const jsonObj = JSON.parse(jsonData);
+
+            table.row.add([
+                null,
+                departure,
+                destination,
+                layovers,
+                '$' + price,
+                carrierName + " (" + carrierCode + ") ",
+                jsonData,
+            ]).draw(false);
+        });
+        document.getElementById("tableDiv").hidden = false;
+        document.getElementById("formButton").hidden = false;
+    }
+    
+    function submitForm() {
+        //var rows_selected = table.rows('.selected').data();
+        var row = table.rows('.selected').data();
+        var jsonString = row[0][6];
+        //var jsonObj = JSON.parse(rawData);
+        //var jsonString = JSON.stringify(jsonObj);
+
+        var formTable = $("#tableForm");
+        formTable.append('<input type="hidden" name="jsonInputData" value=' + jsonString + '/>');
+
+
+        //console.log(jsonString);
+        formTable.submit();
+
+        
+    }
+
+
+    //let counter = 0;
+    var table = new DataTable('#flightPriceData', {
+        searching: false,
+        columnDefs:[
+            {
+                orderable: false,
+                className: 'select-checkbox',
+                targets: 0
+            },
+            {
+                target: 6,
+                visible: false,
+                searchable: false
+            }
+        ],
+        select: {
+            style: 'single',
+            selector: 'td:first-child'
+        },
+        order: [[1, 'asc']]
+    });
+
+    
+    
+</script>

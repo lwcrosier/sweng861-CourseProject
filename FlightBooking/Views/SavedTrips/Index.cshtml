@@ -1,0 +1,46 @@
+﻿@model TripListViewModel
+
+<head>
+    <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.6/sl-1.7.0/datatables.min.js"></script>
+</head>
+
+
+<h1>Saved Trips</h1>
+
+<table id="savedTripsTable">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Departure</th>
+            <th>Destination</th>
+            <th>Price</th>
+            <th>Carrier</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var trip in Model.TripList)
+        {
+            <tr>
+                <td>@trip.TravelDate</td>
+                <td>@trip.SourceAirportCode</td>
+                <td>@trip.DestinationAirportCode</td>
+                <td>$@trip.Price</td>
+                <td>@trip.PrimaryCarrier</td>
+                <td>
+                    <form>
+                        <button class="btn btn-danger" asp-action="DeleteTrip" asp-route-id="@trip.Id">Delete</button>
+                    </form>
+                    </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>
+    var table = new DataTable('#savedTripsTable', {
+        searching: false
+    });
+</script>
