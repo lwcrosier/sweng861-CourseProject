@@ -15,10 +15,15 @@ builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>( opt =>
-    opt.UseSqlite("Filename=E:\\_SCHOOL\\MVC\\FlightBooking\\Database\\flightbooking.db"));
+
+//builder.Services.AddDbContext<AppDbContext>( opt =>
+//    opt.UseSqlite("Filename=E:\\_SCHOOL\\MVC\\FlightBooking\\Database\\flightbooking.db"));
+
+//var connectionString = builder.Configuration.GetConnectionString("DefaultDb");
 //builder.Services.AddDbContext<AppDbContext>(opt =>
-//    opt.UseSqlite("Filename=Database/flightbooking.db"));
+//    opt.UseSqlite(connectionString));
+builder.Services.AddDbContext<AppDbContext>(opt =>
+    opt.UseSqlite("Filename=Database/flightbooking.db"));
 
 
 // Add services to the container.
