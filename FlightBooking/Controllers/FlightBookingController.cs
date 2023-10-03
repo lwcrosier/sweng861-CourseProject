@@ -8,18 +8,30 @@ using System.Text.Json;
 
 namespace FlightBooking.Controllers;
 
+
+// Controller class for the 'FlightBooking' page set
+
 public class FlightBookingController : Controller
 {
-    //private readonly ITripAdvisorSearchService _tripSearch;
-    public FlightBookingController()//ITripAdvisorSearchService tripSearch)
+    
+    public FlightBookingController()
     {
-        //_tripSearch = tripSearch;
     }
 
+    /*
+        Index() returns the Views/FlightBooking/Index.cshtml page
+    */
     public IActionResult Index() {
         return View();
     }
 
+
+    /*
+     * SaveSearchResultsAsTrip is an HttpPost method that accepts a string of JSON data and saves it to the database
+     * as a 'Trip' object
+     * @param jsonInputData string of data representing a Trip object
+     * @return Views/FlightBooking/Index.cshtml 
+     */
     [HttpPost]
     public async Task<IActionResult> SaveSearchResultAsTrip(string jsonInputData)
     {
@@ -90,39 +102,4 @@ public class FlightBookingController : Controller
 
         return RedirectToAction("Index");
     }
-
-    /*
-     * 
-     * private async Task<string> FlightSearchAsync(HttpRequestMessage request) 
-    {
-        HttpClient client = new HttpClient();
-        client.Timeout = TimeSpan.FromMinutes(10);
-
-        string requestResults;
-        try 
-        {
-            using (var response = await client.SendAsync(request)) {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                requestResults = body.ToString();
-                return requestResults;
-            }
-        }
-        catch (Exception e) 
-        {
-            Console.WriteLine("Request failed!");
-            Console.WriteLine(e);
-            return("An exception was raised while making the request");
-        }
-    }
-     */
-
-    /*
-        [HttpPost]
-        public async Task<string> Search(TripInformation tripInformation)
-        {
-            string results = await _tripSearch.SearchTripInformation(tripInformation);
-            return results;
-        }
-    */
 }
