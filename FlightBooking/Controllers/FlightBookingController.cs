@@ -65,7 +65,8 @@ public class FlightBookingController : Controller
             TravelDate = DateTime.Parse(jsonInputObj["departureDate"].ToString()),
         };
 
-        string requestUri = "https://localhost:7258/api/trips";
+        //string requestUri = "https://localhost:7258/api/trips";
+        string requestUri = "http://localhost:5000/api/trips";
         HttpClient client = new HttpClient();
 
         HttpResponseMessage getResponse = await client.GetAsync(requestUri);
