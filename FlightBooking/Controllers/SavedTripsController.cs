@@ -36,7 +36,7 @@ namespace FlightBooking.Controllers
         }
 
         /*
-         * DeleteTrip(int id) calls the localhost api to delete the Trip corresponding to id
+         * DeleteTrip() calls the localhost api to delete the Trip corresponding to id
          * @param id of the trip to delete
          * @return a call the Index() to return Views/SavedTrips/Index.cshtml
          */
