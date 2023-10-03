@@ -1,5 +1,8 @@
 namespace FlightBooking.Models;
 
+/*
+ * Class object to represent basic trip information to conduct a search
+ */
 public class TripInformation
 {
     public string Source { get; set; }
