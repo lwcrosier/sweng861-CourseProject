@@ -66,28 +66,33 @@
         var UriWithParams = uri + queryParams
 
         
-        fetch(UriWithParams, {
-            method: 'get'
-            
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-                console.log('fetch returned not ok' + response.status);
-                console.log(response.json());
-                
-            }
+        if (validateAirportCode(Source) && validateAirportCode(Destination)) {
 
-            response.json().then(function (data) {
-                console.log('fetch returned ok');
-                updateFlightTable(data);
-                console.log(data);
-                myquerydata = data;
-            });
-        })
-        .catch(function (err) {
-            console.log('error:');
-            console.log(err);
-        });
+            fetch(UriWithParams, {
+                method: 'get'
+
+            })
+                .then(function (response) {
+                    if (response.status !== 200) {
+                        console.log('fetch returned not ok' + response.status);
+                        console.log(response.json());
+
+                    }
+
+                    response.json().then(function (data) {
+                        console.log('fetch returned ok');
+                        updateFlightTable(data);
+                        console.log(data);
+                        myquerydata = data;
+                    });
+                })
+                .catch(function (err) {
+                    console.log('error:');
+                    console.log(err);
+                });
+        } else {
+            console.log("Invalid Input");
+        }
     }
 
     function updateFlightTable(responseData) {
@@ -165,6 +170,10 @@
         
     }
 
+    function validateAirportCode(airportCode) {
+        const re = new RegExp("^[A-Z]{3}$");
+        return re.test(airportCode)
+    }
 
     //let counter = 0;
     var table = new DataTable('#flightPriceData', {
