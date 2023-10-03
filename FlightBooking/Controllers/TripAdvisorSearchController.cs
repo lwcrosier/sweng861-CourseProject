@@ -5,7 +5,10 @@ using Newtonsoft.Json.Linq;
 
 namespace FlightBooking.Controllers;
 
-
+/*
+ * API Controller Class that is used to call the TripAdvisor API via RapidApi.
+ * It will cache results for 8 hours before making a new call
+ */
 [ApiController]
 [Route("api/[controller]")]
 public class TripAdvisorSearchController : ControllerBase
@@ -13,13 +16,23 @@ public class TripAdvisorSearchController : ControllerBase
     public readonly ITripAdvisorSearchService _search;
     private readonly ITripSearchResultsRepository _searchRepository;
     
-
+    /*
+     * TripAdvisorSearchController() constructor
+     * @param search is a TripAdvisorSearchService interface via dependency injection to call the API Search Service
+     * @param searchRepository is a TripSearchResultsRepository interface via dependency injection to handle TripSearchResults objects in the database
+     */
     public TripAdvisorSearchController(ITripAdvisorSearchService search, ITripSearchResultsRepository searchRepository) 
     {
         _search = search;
         _searchRepository = searchRepository;
     }
 
+    /*
+     * SearchTripAdvisorAsync() calls TripAdvisor via RapidApi to search for flights with given parameters.  HttpGet only
+     * @param src is the source airport code
+     * @param dst is the destination airport code
+     * @param date is the date of travel
+     */
     [HttpGet]
     public async Task<IActionResult> SearchTripAdvisorAsync(string src, string dst, string date)
     {
@@ -55,27 +68,5 @@ public class TripAdvisorSearchController : ControllerBase
             return Ok(results.Results);
         }
 
-        //return Ok();
-
-
     }
-
-    private async Task CacheSearchResults(TripInformation tripInformation, string results)
-    {
-        DateTime cachedtime = DateTime.Now;
-    }
-
-    /*
-    [HttpPost]
-    public IActionResult Test(string jsonInputData)
-    {
-        string deser = JsonConvert.SerializeObject(jsonInputData); 
-        Console.WriteLine(deser);
-        return Json(deser);
-    }
-    */
-
-    
-
-    
 }
