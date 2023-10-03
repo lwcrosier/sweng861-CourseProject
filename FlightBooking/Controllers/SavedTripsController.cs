@@ -43,7 +43,7 @@ namespace FlightBooking.Controllers
         public async Task<IActionResult> DeleteTrip(int id)
         {
 
-            string requestUri = String.Format(@"https://localhost:7258/api/trips/{0}", id);
+            string requestUri = String.Format(@"http://localhost:5000/api/trips/{0}", id);
             HttpClient client = new HttpClient();
 
             HttpResponseMessage response = await client.DeleteAsync(requestUri);
