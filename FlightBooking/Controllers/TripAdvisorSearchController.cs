@@ -32,6 +32,7 @@ public class TripAdvisorSearchController : ControllerBase
      * @param src is the source airport code
      * @param dst is the destination airport code
      * @param date is the date of travel
+     * @return JSON results from either the Cached Search results or from the direct API call
      */
     [HttpGet]
     public async Task<IActionResult> SearchTripAdvisorAsync(string src, string dst, string date)
